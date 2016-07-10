@@ -23,6 +23,15 @@ def create_context():
 if __name__ == '__main__':
     context = create_context()
     driver = HuaweiVRPResourceDriver()
+
+    #response = driver.get_inventory(context)
+    #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
+    #
+    #res = driver.save(context, 'flash:/config_backup/','startup')
+    #C:/Users/Administrator/Desktop/test
+    #tftp://12.30.245.98/test/test.txt
+    res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
+
     #response = driver.get_inventory(context)
     res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
     #print driver.send_custom_command(context, "display version")
