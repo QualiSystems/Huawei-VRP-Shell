@@ -13,20 +13,20 @@ def create_context():
     context.reservation.reservation_id = 'test_id'
     context.resource.attributes = {}
     context.resource.attributes['User'] = 'telnet'
-    context.resource.attributes['Password'] = 'Huawei@123'
-    context.resource.attributes['Enable Password'] = 'Huawei@123'
+    context.resource.attributes['Password'] = 'XXXXXXX'
+    context.resource.attributes['Enable Password'] = 'XXXXXXXX'
     context.resource.address = '172.19.0.37'
     context.resource.attributes['SNMP Version'] = '2'
-    context.resource.attributes['SNMP Read Community'] = 'esdkr0key'
+    context.resource.attributes['SNMP Read Community'] = 'XXXXXXX'
     return context
-
+#Access
 request = """{
 	"driverRequest" : {
 		"actions" : [{
 				"connectionId" : "457238ad-4023-49cf-8943-219cb038c0dc",
 				"connectionParams" : {
 					"vlanId" : "46",
-					"mode" : "Access",
+					"mode" : "Trunk",
 					"vlanServiceAttributes" : [{
 							"attributeName" : "QnQ",
 							"attributeValue" : "False",
