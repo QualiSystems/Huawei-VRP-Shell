@@ -27,7 +27,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
 
     def cleanup(self):
         pass
-
+#
     @context_from_args
     def ApplyConnectivityChanges(self, context, request):
         connectivity_operations = inject.instance('connectivity_operations')
