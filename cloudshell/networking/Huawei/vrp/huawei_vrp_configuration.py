@@ -33,14 +33,14 @@ DEFAULT_ACTIONS = send_default_actions
 SUPPORTED_OS = ['VRP']
 CONNECTION_TYPE = 'ssh'
 DEFAULT_CONNECTION_TYPE = 'ssh'
-
+#get_attribute_by_name_wrapper('Enable Password')()
 def enter_enable_mode(session):
     result = session.hardware_expect('', re_string=DEFAULT_PROMPT)
     if not re.search(SUPER_PROMPT, result):
         session.hardware_expect('super', re_string=DEFAULT_PROMPT,
                                 expect_map={'[Pp]assword': lambda session: session.send_line(
-                                    get_attribute_by_name_wrapper('Enable Password')())})
-        #get_decrypted_password_by_attribute_name_wrapper('Enable Password')()
+                                    get_decrypted_password_by_attribute_name_wrapper('Enable Password')() )})
+        #
 
     result = session.hardware_expect('', re_string=DEFAULT_PROMPT)
     if not re.search(SUPER_PROMPT, result):
