@@ -29,7 +29,8 @@ def create_context():
     context.resource.attributes['Model'] = 'Enterprises.2011.2.23.339'
     context.resource.attributes['AdminPassword'] ='DxTbqlSgAVPmrDLlHvJrsA=='
     context.resource.attributes['Vendor'] = 'Huawei'
-
+    return context
+'''
     context.connectivity = ConnectivityContext()
     context.connectivity.admin_auth_token = 'T1dkw4LLJUSmWDpolusJdw=='
     context.connectivity.cloudshell_api_port = '8029'
@@ -44,8 +45,8 @@ def create_context():
     context.description['name'] = 'Huawei37'
 
     context.description['type'] = 'Resource'
-    return context
 
+'''
 
 #Access
 request = """{
