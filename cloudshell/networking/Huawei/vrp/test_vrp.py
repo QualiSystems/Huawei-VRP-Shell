@@ -109,11 +109,12 @@ if __name__ == '__main__':
     #res = driver.save(context, 'flash:/config_backup/','startup')
     #C:/Users/Administrator/Desktop/test
     #tftp://12.30.245.98/test/test.txt
-    #res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
+    res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
 
     #response = driver.get_inventory(context)
     #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
-    res = driver.ApplyConnectivityChanges(context, request)
+
+    #res = driver.ApplyConnectivityChanges(context, request)
     #res=driver.update_firmware(context,'1.1.1.1','flash:/config_backup/')
     #print driver.send_custom_command(context, "display version")
     # print response
