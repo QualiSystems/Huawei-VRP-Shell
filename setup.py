@@ -10,7 +10,7 @@ with open('requirements.txt') as f_required:
 
 setup(
     name='Huawei-VRP-Shell',
-    url='https://github.com/QualiSystems/',
+    url='https://github.com/QualiSystems/Huawei-VRP-Shell',
     author='QualiSystems',
     author_email='info@qualisystems.com',
     packages=find_packages(),
