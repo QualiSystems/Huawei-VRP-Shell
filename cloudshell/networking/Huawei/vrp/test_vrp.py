@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails,ConnectivityContext
-from cloudshell.networking.Huawei.vrp.huawei_vrp_resource_driver import HuaweiVRPResourceDriver
+from cloudshell.networking.huawei.vrp.huawei_vrp_resource_driver import HuaweiVRPResourceDriver
 import re
 
 
@@ -28,7 +28,7 @@ def create_context():
     context.resource.attributes['SNMP Read Community'] = 'esdkr0key'
     context.resource.attributes['Model'] = 'Enterprises.2011.2.23.339'
     context.resource.attributes['AdminPassword'] ='DxTbqlSgAVPmrDLlHvJrsA=='
-    context.resource.attributes['Vendor'] = 'Huawei'
+    context.resource.attributes['Vendor'] = 'huawei'
     return context
 '''
     context.connectivity = ConnectivityContext()
@@ -128,8 +128,8 @@ if __name__ == '__main__':
 resource.attributes=
 {'CLI Connection Type': 'SSH', 'Enable Password': 'PgkOScppedeEbHGHdzpnrw==', 'NAT_Value_ManagementNetwork': '',
 'System Name': '172.19.0.36', 'Console User': '', 'Location': 'Beijing China', 'OS Version': '5.160', 'Console Password': '3M3u7nkDzxWb0aJ/IZYeWw==',
-'Power Management': 'False', 'Vendor': 'Huawei', 'AdminUser': 'admin', 'Backup Location': '', 'Sessions Concurrency Limit': '1', 'User': 'telnet',
- 'Password': 'PgkOScppedeEbHGHdzpnrw==', 'SNMP Version': '2', 'BaselineGroup': '0', 'Contact Name': 'R&D Beijing, Huawei Technologies co.,Ltd.', 'SNMP V3 Private Key': '',
+'Power Management': 'False', 'Vendor': 'huawei', 'AdminUser': 'admin', 'Backup Location': '', 'Sessions Concurrency Limit': '1', 'User': 'telnet',
+ 'Password': 'PgkOScppedeEbHGHdzpnrw==', 'SNMP Version': '2', 'BaselineGroup': '0', 'Contact Name': 'R&D Beijing, huawei Technologies co.,Ltd.', 'SNMP V3 Private Key': '',
  'SNMP Read Community': 'esdkr0key', 'SNMP V3 Password': '', 'Model': 'Enterprises.2011.2.23.339', 'Console Port': '0', 'GuacServer': '', 'AdminPassword': 'DxTbqlSgAVPmrDLlHvJrsA==',
  'Console Server IP Address': '', 'BaselineConfigFilename': '', 'SNMP V3 User': '', 'SNMP Write Community': 'esdkw0key'}
 
