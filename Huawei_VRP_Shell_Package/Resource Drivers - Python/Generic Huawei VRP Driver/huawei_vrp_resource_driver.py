@@ -6,7 +6,7 @@ from cloudshell.shell.core.context_utils import context_from_args
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.shell.core.driver_utils import GlobalLock
 
-import cloudshell.networking.Huawei.vrp.huawei_vrp_configuration as driver_config
+import cloudshell.networking.huawei.vrp.huawei_vrp_configuration as driver_config
 
 
 class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverInterface, GlobalLock):

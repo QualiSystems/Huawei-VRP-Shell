@@ -9,8 +9,8 @@ with open('requirements.txt') as f_required:
 
 
 setup(
-    name='cloudshell-networking-Huawei-vrp',
-    url='https://github.com/QualiSystems/cloudshell-networking-Huawei-vrp',
+    name='cloudshell-networking-huawei-vrp',
+    url='https://github.com/QualiSystems/cloudshell-networking-huawei-vrp',
     author='QualiSystems',
     author_email='info@qualisystems.com',
     packages=find_packages(),
