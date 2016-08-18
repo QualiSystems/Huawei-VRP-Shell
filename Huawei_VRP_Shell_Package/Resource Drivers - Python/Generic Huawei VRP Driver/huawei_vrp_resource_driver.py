@@ -9,6 +9,7 @@ from cloudshell.shell.core.driver_utils import GlobalLock
 import cloudshell.networking.huawei.vrp.huawei_vrp_configuration as driver_config
 
 
+
 class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverInterface, GlobalLock):
     def __init__(self):
         super(HuaweiVRPResourceDriver, self).__init__()
@@ -26,7 +27,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
 
     def cleanup(self):
         pass
-
+#
     @context_from_args
     def ApplyConnectivityChanges(self, context, request):
         connectivity_operations = inject.instance('connectivity_operations')
@@ -49,24 +50,21 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         """
 
         configuration_operations = inject.instance('configuration_operations')
-        response = configuration_operations.restore_configuration(source_file=path, restore_method=restore_method,
-                                                                  config_type=config_type, vrf=vrf)
+
+        response = configuration_operations.restore_configuration(source_path=path, restore_method=restore_method,
+                                                                  configuration_type=config_type, vrf=vrf)
         configuration_operations.logger.info('Restore completed')
         configuration_operations.logger.info(response)
 
     @context_from_args
-    def save(self, context, destination_host, source_filename, vrf=None):
-        """Save selected file to the provided destination
+    def save(self, context, folder_path, configuration_type='', vrf=None):
 
-        :param source_filename: source file, which will be saved
-        :param destination_host: destination path where file will be saved
-        :param vrf: VRF management Name
-        """
 
         configuration_operations = inject.instance('configuration_operations')
-        response = configuration_operations.save_configuration(destination_host, source_filename, vrf)
+        response = configuration_operations.save_configuration(folder_path, configuration_type, vrf)
         configuration_operations.logger.info('Save completed')
         return response
+
 
     @context_from_args
     def get_inventory(self, context):
