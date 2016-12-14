@@ -54,7 +54,7 @@ request = """{
 		"actions": [{
 			"connectionId": "8ccac528-2ff9-4b6d-9415-9dd68ac390c6",
 			"connectionParams": {
-				"vlanId": "23",
+				"vlanId": "300-401",
 				"mode": "Trunk",
 				"vlanServiceAttributes": [{
 					"attributeName": "QnQ",
@@ -74,7 +74,7 @@ request = """{
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "VLAN ID",
-					"attributeValue": "23",
+					"attributeValue": "300-401",
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "Pool Name",
@@ -82,7 +82,7 @@ request = """{
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "Virtual Network",
-					"attributeValue": "23",
+					"attributeValue": "300-401",
 					"type": "vlanServiceAttribute"
 				}],
 				"type": "setVlanParameter"
@@ -102,20 +102,21 @@ request = """{
 if __name__ == '__main__':
     context = create_context()
     driver = HuaweiVRPResourceDriver()
-
+    #Error: File can't be found "flash:/test".
     #response = driver.get_inventory(context)
-    #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
+    #res = driver.save(context, 'tftp://82.80.35.226', 'startup')
+    #res = driver.restore(context, 'tftp://10.1.20.80/test.zip', 'running', 'override')
     #
     #res = driver.save(context, 'flash:/config_backup/','startup')
     #C:/Users/Administrator/Desktop/test
     #tftp://12.30.245.98/test/test.txt
     #res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
 
-    #response = driver.get_inventory(context)
+    response = driver.get_inventory(context)
     #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
 
-    res = driver.ApplyConnectivityChanges(context, request)
-    print res
+    #res = driver.ApplyConnectivityChanges(context, request)
+    print response
     #res=driver.update_firmware(context,'1.1.1.1','flash:/config_backup/')
     #print driver.send_custom_command(context, "display version")
     # print response
