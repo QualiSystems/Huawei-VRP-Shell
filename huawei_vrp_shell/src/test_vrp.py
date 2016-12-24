@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails,ConnectivityContext
-from cloudshell.networking.huawei.vrp.huawei_vrp_resource_driver import HuaweiVRPResourceDriver
+from huawei_vrp_resource_driver import HuaweiVRPResourceDriver
 import re
 
 
@@ -20,16 +20,23 @@ def create_context():
     context.resource.attributes['CLI Connection Type'] = 'SSH'
     context.resource.attributes['User'] = 'telnet'
     context.resource.attributes['AdminUser'] = 'admin'
-    context.resource.attributes['Console Password'] = '3M3u7nkDzxWb0aJ/IZYeWw=='
-    context.resource.attributes['Password'] = 'PgkOScppedeEbHGHdzpnrw=='
-    context.resource.attributes['Enable Password'] = 'PgkOScppedeEbHGHdzpnrw=='
-    context.resource.address = '172.19.0.37'
+    context.resource.attributes['Console Password'] = 'PnH1Zj5Dwdoi0InLe86FlIoDKlR24U6tfp4cxnUG8VE='
+    context.resource.attributes['Password'] = 'ajbUAT9xxFSaZFt8PBX2aA=='
+    context.resource.attributes['Enable Password'] = 'aCTd8zLVSQxau/4eiNGXdQYLRMegiNTJ2FKph56m12s='
+    context.resource.address = '172.19.47.74'
     context.resource.attributes['SNMP Version'] = '2'
-    context.resource.attributes['SNMP Read Community'] = 'esdkr0key'
+    context.resource.attributes['SNMP Read Community'] = 'Test1234'
     context.resource.attributes['Model'] = 'Enterprises.2011.2.23.339'
     context.resource.attributes['AdminPassword'] ='DxTbqlSgAVPmrDLlHvJrsA=='
     context.resource.attributes['Vendor'] = 'huawei'
+    context.resource.attributes['Enable SNMP'] = 'True'
+    context.resource.attributes['Disable SNMP'] = 'False'
+    context.resource.attributes['CLI TCP Port'] = '0'
+    context.resource.attributes['Sessions Concurrency Limit'] = 2
+    context.resource.name = '2950'
     return context
+
+
 '''
     context.connectivity = ConnectivityContext()
     context.connectivity.admin_auth_token = 'T1dkw4LLJUSmWDpolusJdw=='
@@ -54,7 +61,7 @@ request = """{
 		"actions": [{
 			"connectionId": "8ccac528-2ff9-4b6d-9415-9dd68ac390c6",
 			"connectionParams": {
-				"vlanId": "300-401",
+				"vlanId": "23",
 				"mode": "Trunk",
 				"vlanServiceAttributes": [{
 					"attributeName": "QnQ",
@@ -74,7 +81,7 @@ request = """{
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "VLAN ID",
-					"attributeValue": "300-401",
+					"attributeValue": "23",
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "Pool Name",
@@ -82,7 +89,7 @@ request = """{
 					"type": "vlanServiceAttribute"
 				}, {
 					"attributeName": "Virtual Network",
-					"attributeValue": "300-401",
+					"attributeValue": "23",
 					"type": "vlanServiceAttribute"
 				}],
 				"type": "setVlanParameter"
@@ -99,19 +106,20 @@ request = """{
 		}]
 	}
 }"""
+
+
 if __name__ == '__main__':
     context = create_context()
     driver = HuaweiVRPResourceDriver()
-    #Error: File can't be found "flash:/test".
+
     #response = driver.get_inventory(context)
-    #res = driver.save(context, 'tftp://82.80.35.226', 'startup')
-    #res = driver.restore(context, 'tftp://10.1.20.80/test.zip', 'running', 'override')
+    #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
     #
     #res = driver.save(context, 'flash:/config_backup/','startup')
     #C:/Users/Administrator/Desktop/test
     #tftp://12.30.245.98/test/test.txt
     #res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
-
+    driver.initialize(context)
     response = driver.get_inventory(context)
     #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
 
