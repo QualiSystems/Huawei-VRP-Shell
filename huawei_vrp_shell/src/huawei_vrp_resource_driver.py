@@ -1,123 +1,267 @@
-import inject
-
-from cloudshell.networking.generic_bootstrap import NetworkingGenericBootstrap
+from cloudshell.networking.huawei.runners.huawei_autoload_runner import HuaweiAutoloadRunner as AutoloadRunner
+from cloudshell.networking.huawei.runners.huawei_configuration_runner import HuaweiConfigurationRunner as ConfigurationRunner
+from cloudshell.networking.huawei.runners.huawei_firmware_runner import HuaweiFirmwareRunner as FirmwareRunner
+from cloudshell.networking.huawei.runners.huawei_run_command_runner import HuaweiRunCommandRunner as CommandRunner
+from cloudshell.networking.huawei.runners.huawei_state_runner import HuaweiStateRunner as StateRunner
+from cloudshell.shell.core.context_utils import get_attribute_by_name
+from cloudshell.networking.devices.driver_helper import get_logger_with_thread_id, get_api, get_cli
+from cloudshell.shell.core.context import ResourceCommandContext
 from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
-from cloudshell.shell.core.context_utils import context_from_args
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.shell.core.driver_utils import GlobalLock
-
-import cloudshell.networking.huawei.vrp.huawei_vrp_configuration as driver_config
-
-
+from cloudshell.networking.huawei.runners.huawei_connectivity_runner import \
+    HuaweiConnectivityRunner as ConnectivityRunner
 
 class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverInterface, GlobalLock):
     def __init__(self):
         super(HuaweiVRPResourceDriver, self).__init__()
-        bootstrap = NetworkingGenericBootstrap()
-        bootstrap.add_config(driver_config)
-        bootstrap.initialize()
+        self.supported_os = ["VRP"]
+        self._cli = None
 
-    @context_from_args
     def initialize(self, context):
         """Initialize method
         :type context: cloudshell.shell.core.context.driver_context.InitCommandContext
         """
-
+        session_pool_size = int(get_attribute_by_name(context=context, attribute_name='Sessions Concurrency Limit'))
+        self._cli = get_cli(session_pool_size)
         return 'Finished initializing'
 
     def cleanup(self):
         pass
-#
-    @context_from_args
-    def ApplyConnectivityChanges(self, context, request):
-        connectivity_operations = inject.instance('connectivity_operations')
-        connectivity_operations.logger.info('Start applying connectivity changes, request is: {0}'.format(str(request)))
-        response = connectivity_operations.apply_connectivity_changes(request)
-        connectivity_operations.logger.info('Finished applying connectivity changes, responce is: {0}'.format(str(
-            response)))
-        connectivity_operations.logger.info('Apply Connectivity changes completed')
-        return response
+
 
     @GlobalLock.lock
-    @context_from_args
-    def restore(self, context, path, config_type, restore_method, vrf=None):
-        """Restore selected file to the provided destination
-
-        :param path: source config file
-        :param config_type: running or startup configs
-        :param restore_method: append or override methods
-        :param vrf: VRF management Name
-        """
-
-        configuration_operations = inject.instance('configuration_operations')
-
-        response = configuration_operations.restore_configuration(source_path=path, restore_method=restore_method,
-                                                                  configuration_type=config_type, vrf=vrf)
-        configuration_operations.logger.info('Restore completed')
-        configuration_operations.logger.info(response)
-
-    @context_from_args
-    def save(self, context, folder_path, configuration_type='', vrf=None):
-
-
-        configuration_operations = inject.instance('configuration_operations')
-        response = configuration_operations.save_configuration(folder_path, configuration_type, vrf)
-        configuration_operations.logger.info('Save completed')
-        return response
-
-
-    @context_from_args
     def get_inventory(self, context):
         """Return device structure with all standard attributes
 
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
         :return: response
-        :rtype: string
+        :rtype: str
         """
 
-        autoload_operations = inject.instance("autoload_operations")
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        autoload_operations = AutoloadRunner(cli=self._cli, logger=logger, context=context, api=api,
+                                             supported_os=self.supported_os)
+        logger.info('Autoload started')
         response = autoload_operations.discover()
-        autoload_operations.logger.info('Autoload completed')
+        logger.info('Autoload completed')
         return response
 
+
+    def ApplyConnectivityChanges(self, context, request):
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        connectivity_operations = ConnectivityRunner(cli=self._cli, context=context, api=api, logger=logger)
+        logger.info('Start applying connectivity changes, request is: {0}'.format(str(request)))
+        result = connectivity_operations.apply_connectivity_changes(request=request)
+        logger.info('Finished applying connectivity changes, response is: {0}'.format(str(
+            result)))
+        logger.info('Apply Connectivity changes completed')
+
+        return result
+
     @GlobalLock.lock
-    @context_from_args
+    def restore(self, context, path, configuration_type='running', restore_method='override', vrf_management_name=None):
+        """Restore selected file to the provided destination
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :param path: source config file
+        :param configuration_type: running or startup configs
+        :param restore_method: append or override methods
+        :param vrf_management_name: VRF management Name
+        """
+
+        if not configuration_type:
+            configuration_type = 'running'
+
+        if not restore_method:
+            restore_method = 'override'
+
+        if not vrf_management_name:
+            vrf_management_name = get_attribute_by_name(context=context, attribute_name='VRF Management Name')
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+
+        configuration_operations = ConfigurationRunner(logger=logger, api=api, cli=self._cli, context=context)
+        logger.info('Restore started')
+        configuration_operations.restore(path=path, restore_method=restore_method,
+                                         configuration_type=configuration_type,
+                                         vrf_management_name=vrf_management_name)
+        logger.info('Restore completed')
+
+    def save(self, context, folder_path='', configuration_type='running', vrf_management_name=None):
+        """Save selected file to the provided destination
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :param configuration_type: source file, which will be saved
+        :param folder_path: destination path where file will be saved
+        :param vrf_management_name: VRF management Name
+        :return str saved configuration file name:
+        """
+
+        if not configuration_type:
+            configuration_type = 'running'
+
+        if not vrf_management_name:
+            vrf_management_name = get_attribute_by_name(context=context, attribute_name='VRF Management Name')
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+
+        configuration_operations = ConfigurationRunner(logger=logger, cli=self._cli, context=context, api=api)
+        logger.info('Save started')
+        response = configuration_operations.save(folder_path=folder_path, configuration_type=configuration_type,
+                                                 vrf_management_name=vrf_management_name)
+        logger.info('Save completed')
+        return response
+
+    def orchestration_save(self, context, mode="shallow", custom_params=None):
+        """
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :param mode: mode
+        :param custom_params: json with custom save parameters
+        :return str response: response json
+        """
+
+        if not mode:
+            mode = 'shallow'
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+
+        configuration_operations = ConfigurationRunner(logger=logger, api=api, cli=self._cli, context=context)
+        logger.info('Orchestration save started')
+        response = configuration_operations.orchestration_save(mode=mode, custom_params=custom_params)
+        logger.info('Orchestration save completed')
+        return response
+
+    def orchestration_restore(self, context, saved_artifact_info, custom_params=None):
+        """
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :param saved_artifact_info: OrchestrationSavedArtifactInfo json
+        :param custom_params: json with custom restore parameters
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+
+        configuration_operations = ConfigurationRunner(logger=logger, api=api, cli=self._cli, context=context)
+        logger.info('Orchestration restore started')
+        configuration_operations.orchestration_restore(saved_artifact_info=saved_artifact_info,
+                                                       custom_params=custom_params)
+        logger.info('Orchestration restore completed')
+
+    @GlobalLock.lock
+    def load_firmware(self, context, path, vrf_management_name=None):
+        """Upload and updates firmware on the resource
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :param path: full path to firmware file, i.e. tftp://10.10.10.1/firmware.tar
+        :param vrf_management_name: VRF management Name
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        if not vrf_management_name:
+            vrf_management_name = get_attribute_by_name(context=context, attribute_name='VRF Management Name')
+
+        logger.info('Start Load Firmware')
+        firmware_operations = FirmwareRunner(cli=self._cli, logger=logger, context=context, api=api)
+        response = firmware_operations.load_firmware(path=path, vrf_management_name=vrf_management_name)
+        logger.info('Finish Load Firmware: {}'.format(response))
+
+
+    def run_custom_command(self, context, custom_command):
+        """Send custom command
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :return: result
+        :rtype: str
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        send_command_operations = CommandRunner(cli=self._cli, logger=logger, context=context, api=api)
+        response = send_command_operations.run_custom_command(custom_command=custom_command)
+        return response
+
+    def health_check(self, context):
+        """Performs device health check
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :return: Success or Error message
+        :rtype: str
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        state_operations = StateRunner(cli=self._cli, logger=logger, api=api, context=context)
+        return state_operations.health_check()
+
+    def run_custom_config_command(self, context, custom_command):
+        """Send custom command in configuration mode
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :return: result
+        :rtype: str
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        send_command_operations = CommandRunner(cli=self._cli, logger=logger, context=context, api=api)
+        result_str = send_command_operations.run_custom_config_command(custom_command=custom_command)
+        return result_str
+
+    @GlobalLock.lock
     def update_firmware(self, context, remote_host, file_path):
         """Upload and updates firmware on the resource
 
-        :param remote_host: path to tftp:// server where firmware file is stored
+        :param remote_host: path to firmware file location on ftp or tftp server
         :param file_path: firmware file name
         :return: result
-        :rtype: string
+        :rtype: str
         """
 
-        firmware_operations = inject.instance("firmware_operations")
-        response = firmware_operations.update_firmware(remote_host=remote_host, file_path=file_path)
-        firmware_operations.logger.info(response)
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        vrf_management_name = get_attribute_by_name(context=context, attribute_name='VRF Management Name')
 
-    @context_from_args
-    def send_custom_command(self, context, command):
-        """Send custom command
+        logger.info('Start Update Firmware')
+        firmware_operations = FirmwareRunner(cli=self._cli, logger=logger, context=context, api=api)
+        response = firmware_operations.load_firmware(path=remote_host, vrf_management_name=vrf_management_name)
+        logger.info('Finish Update Firmware: {}'.format(response))
 
-        :return: result
-        :rtype: string
-        """
-
-        send_command_operations = inject.instance("send_command_operations")
-        response = send_command_operations.send_command(command=command)
-        print response
-        return response
-
-    @context_from_args
-    def send_custom_config_command(self, context, command):
+    def send_custom_command(self, context, custom_command):
         """Send custom command in configuration mode
 
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
         :return: result
-        :rtype: string
+        :rtype: str
         """
-        send_command_operations = inject.instance("send_command_operations")
-        result_str = send_command_operations.send_config_command(command=command)
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        send_command_operations = CommandRunner(cli=self._cli, logger=logger, context=context, api=api)
+        response = send_command_operations.run_custom_command(custom_command=custom_command)
+        return response
+
+    def send_custom_config_command(self, context, custom_command):
+        """Send custom command in configuration mode
+
+        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
+        :return: result
+        :rtype: str
+        """
+
+        logger = get_logger_with_thread_id(context)
+        api = get_api(context)
+        send_command_operations = CommandRunner(cli=self._cli, logger=logger, context=context, api=api)
+        result_str = send_command_operations.run_custom_config_command(custom_command=custom_command)
         return result_str
 
-    @context_from_args
-    def shutdown(self, context):
-        pass
+
+    def shutdown(self, context):pass
