@@ -1,85 +1,123 @@
-from cloudshell.networking.huawei.runners.huawei_autoload_runner import HuaweiAutoloadRunner
-from cloudshell.shell.core.context_utils import get_attribute_by_name
-from cloudshell.networking.devices.driver_helper import get_logger_with_thread_id, get_api, get_cli
-from cloudshell.shell.core.context import ResourceCommandContext
+import inject
+
+from cloudshell.networking.generic_bootstrap import NetworkingGenericBootstrap
 from cloudshell.networking.networking_resource_driver_interface import NetworkingResourceDriverInterface
+from cloudshell.shell.core.context_utils import context_from_args
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.shell.core.driver_utils import GlobalLock
-from cloudshell.networking.huawei.runners.huawei_connectivity_runner import \
-    HuaweiConnectivityRunner as ConnectivityRunner
+
+import cloudshell.networking.huawei.vrp.huawei_vrp_configuration as driver_config
+
+
 
 class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverInterface, GlobalLock):
     def __init__(self):
         super(HuaweiVRPResourceDriver, self).__init__()
-        self.supported_os = ["VRP"]
-        self._cli = None
+        bootstrap = NetworkingGenericBootstrap()
+        bootstrap.add_config(driver_config)
+        bootstrap.initialize()
 
+    @context_from_args
     def initialize(self, context):
         """Initialize method
         :type context: cloudshell.shell.core.context.driver_context.InitCommandContext
         """
-        session_pool_size = int(get_attribute_by_name(context=context, attribute_name='Sessions Concurrency Limit'))
-        self._cli = get_cli(session_pool_size)
+
         return 'Finished initializing'
 
     def cleanup(self):
         pass
-
+#
+    @context_from_args
+    def ApplyConnectivityChanges(self, context, request):
+        connectivity_operations = inject.instance('connectivity_operations')
+        connectivity_operations.logger.info('Start applying connectivity changes, request is: {0}'.format(str(request)))
+        response = connectivity_operations.apply_connectivity_changes(request)
+        connectivity_operations.logger.info('Finished applying connectivity changes, responce is: {0}'.format(str(
+            response)))
+        connectivity_operations.logger.info('Apply Connectivity changes completed')
+        return response
 
     @GlobalLock.lock
-    def get_inventory(self, context):
-        """Return device structure with all standard attributes
+    @context_from_args
+    def restore(self, context, path, config_type, restore_method, vrf=None):
+        """Restore selected file to the provided destination
 
-        :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
-        :return: response
-        :rtype: str
+        :param path: source config file
+        :param config_type: running or startup configs
+        :param restore_method: append or override methods
+        :param vrf: VRF management Name
         """
 
-        logger = get_logger_with_thread_id(context)
-        api = get_api(context)
-        autoload_operations = HuaweiAutoloadRunner(cli=self._cli, logger=logger, context=context, api=api,
-                                             supported_os=self.supported_os)
-        logger.info('Autoload started')
-        response = autoload_operations.discover()
-        logger.info('Autoload completed')
+        configuration_operations = inject.instance('configuration_operations')
+
+        response = configuration_operations.restore_configuration(source_path=path, restore_method=restore_method,
+                                                                  configuration_type=config_type, vrf=vrf)
+        configuration_operations.logger.info('Restore completed')
+        configuration_operations.logger.info(response)
+
+    @context_from_args
+    def save(self, context, folder_path, configuration_type='', vrf=None):
+
+
+        configuration_operations = inject.instance('configuration_operations')
+        response = configuration_operations.save_configuration(folder_path, configuration_type, vrf)
+        configuration_operations.logger.info('Save completed')
         return response
 
 
-    def ApplyConnectivityChanges(self, context, request):
-        logger = get_logger_with_thread_id(context)
-        api = get_api(context)
-        connectivity_operations = ConnectivityRunner(cli=self._cli, context=context, api=api, logger=logger)
-        logger.info('Start applying connectivity changes, request is: {0}'.format(str(request)))
-        result = connectivity_operations.apply_connectivity_changes(request=request)
-        logger.info('Finished applying connectivity changes, response is: {0}'.format(str(
-            result)))
-        logger.info('Apply Connectivity changes completed')
+    @context_from_args
+    def get_inventory(self, context):
+        """Return device structure with all standard attributes
 
-        return result
+        :return: response
+        :rtype: string
+        """
 
-    @GlobalLock.lock
-    def restore(self, context, path, configuration_type='running', restore_method='override', vrf_management_name=None):pass
-
-    def save(self, context, folder_path='', configuration_type='running', vrf_management_name=None):pass
-
-    def orchestration_save(self, context, mode="shallow", custom_params=None):pass
-
-    def orchestration_restore(self, context, saved_artifact_info, custom_params=None):pass
+        autoload_operations = inject.instance("autoload_operations")
+        response = autoload_operations.discover()
+        autoload_operations.logger.info('Autoload completed')
+        return response
 
     @GlobalLock.lock
-    def load_firmware(self, context, path, vrf_management_name=None):pass
+    @context_from_args
+    def update_firmware(self, context, remote_host, file_path):
+        """Upload and updates firmware on the resource
 
-    def run_custom_command(self, context, custom_command):pass
+        :param remote_host: path to tftp:// server where firmware file is stored
+        :param file_path: firmware file name
+        :return: result
+        :rtype: string
+        """
 
-    def health_check(self, context):pass
+        firmware_operations = inject.instance("firmware_operations")
+        response = firmware_operations.update_firmware(remote_host=remote_host, file_path=file_path)
+        firmware_operations.logger.info(response)
 
-    def run_custom_config_command(self, context, custom_command):pass
+    @context_from_args
+    def send_custom_command(self, context, command):
+        """Send custom command
 
-    @GlobalLock.lock
-    def update_firmware(self, context, remote_host, file_path):pass
+        :return: result
+        :rtype: string
+        """
 
-    def send_custom_command(self, context, custom_command):pass
+        send_command_operations = inject.instance("send_command_operations")
+        response = send_command_operations.send_command(command=command)
+        print response
+        return response
 
-    def send_custom_config_command(self, context, custom_command):pass
+    @context_from_args
+    def send_custom_config_command(self, context, command):
+        """Send custom command in configuration mode
 
-    def shutdown(self, context):pass
+        :return: result
+        :rtype: string
+        """
+        send_command_operations = inject.instance("send_command_operations")
+        result_str = send_command_operations.send_config_command(command=command)
+        return result_str
+
+    @context_from_args
+    def shutdown(self, context):
+        pass
