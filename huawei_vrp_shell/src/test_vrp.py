@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails,ConnectivityContext
-from cloudshell.networking.huawei.vrp.huawei_vrp_resource_driver import HuaweiVRPResourceDriver
+from huawei_vrp_shell.src import HuaweiVRPResourceDriver
 import re
 
 
@@ -23,12 +23,16 @@ def create_context():
     context.resource.attributes['Console Password'] = '3M3u7nkDzxWb0aJ/IZYeWw=='
     context.resource.attributes['Password'] = 'PgkOScppedeEbHGHdzpnrw=='
     context.resource.attributes['Enable Password'] = 'PgkOScppedeEbHGHdzpnrw=='
-    context.resource.address = '172.19.0.37'
+    context.resource.address = '192.168.73.63'
     context.resource.attributes['SNMP Version'] = '2'
-    context.resource.attributes['SNMP Read Community'] = 'esdkr0key'
+    context.resource.attributes['SNMP Read Community'] = 'public'
     context.resource.attributes['Model'] = 'Enterprises.2011.2.23.339'
     context.resource.attributes['AdminPassword'] ='DxTbqlSgAVPmrDLlHvJrsA=='
     context.resource.attributes['Vendor'] = 'huawei'
+    context.resource.attributes['Enable SNMP'] = 'False'
+    context.resource.attributes['Disable SNMP'] = 'False'
+    context.resource.attributes['CLI TCP Port'] = '0'
+    context.resource.name = '2950'
     return context
 '''
     context.connectivity = ConnectivityContext()
@@ -111,11 +115,11 @@ if __name__ == '__main__':
     #tftp://12.30.245.98/test/test.txt
     #res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
 
-    #response = driver.get_inventory(context)
+    response = driver.get_inventory(context)
     #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
 
-    res = driver.ApplyConnectivityChanges(context, request)
-    print res
+    #res = driver.ApplyConnectivityChanges(context, request)
+    print response
     #res=driver.update_firmware(context,'1.1.1.1','flash:/config_backup/')
     #print driver.send_custom_command(context, "display version")
     # print response
