@@ -2,7 +2,7 @@
     <ShellAttributes>
     </ShellAttributes>
         <ShellModel Family="Router">
-        <ResourceModel Name="Ciscoiosrouter" Description="" SupportsConcurrentCommands="false">
+        <ResourceModel Name="Huaweivrprouter" Description="" SupportsConcurrentCommands="false">
             <AttachedAttributes>
                 <AttachedAttribute Name="User" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
@@ -133,14 +133,14 @@
             </AttributeValues>
             <ParentModels />
             <Drivers>
-                <DriverName>CiscoiosDriver</DriverName>
+                <DriverName>HuaweivrpDriver</DriverName>
             </Drivers>
             <Scripts />
         </ResourceModel>
 
     </ShellModel>
         <ShellModel Family="Switch">
-        <ResourceModel Name="Ciscoiosswitch" Description="" SupportsConcurrentCommands="false">
+        <ResourceModel Name="Huaweivrpswitch" Description="" SupportsConcurrentCommands="false">
             <AttachedAttributes>
                 <AttachedAttribute Name="User" IsOverridable="true" IsLocal="true">
                     <AllowedValues/>
@@ -271,7 +271,7 @@
             </AttributeValues>
             <ParentModels />
             <Drivers>
-                <DriverName>CiscoiosDriver</DriverName>
+                <DriverName>HuaweivrpDriver</DriverName>
             </Drivers>
             <Scripts />
         </ResourceModel>
