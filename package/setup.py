@@ -7,15 +7,18 @@ with open(os.path.join('version.txt')) as version_file:
 with open('requirements.txt') as f_required:
     required = f_required.read().splitlines()
 
+with open('test_requirements.txt') as f_tests:
+    required_for_tests = f_tests.read().splitlines()
 
 setup(
-    name='cloudshell-resolution-huawei-vrp',
-    url='https://github.com/QualiSystems/cloudshell-resolution-huawei-vrp',
+    name='cloudshell-networking-huawei-vrp',
+    url='http://www.qualisystems.com/',
     author='QualiSystems',
     author_email='info@qualisystems.com',
     packages=find_packages(),
-    install_requires=required,
+	install_requires=required,
+    tests_require=required_for_tests,
     version=version_from_file,
-    description='QualiSystems Python package',
+    description='QualiSystems networking huawei VRP specific Package',
     include_package_data = True
 )
