@@ -1,6 +1,0 @@
-cloudshell-networking-huawei-vrp>=1.0,<2.2
-cloudshell-networking-huawei>=1.0,<2.2
-cloudshell-cli>=2.1,<2.2
-cloudshell-snmp>=2.1,<2.2
-cloudshell-automation-api>=7.0,<7.1
-inject==3.3.1
