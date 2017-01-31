@@ -62,7 +62,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         return result
 
     @GlobalLock.lock
-    def restore(self, context, path, configuration_type='running', restore_method='override', vrf_management_name=None):
+    def restore(self, context, path, configuration_type, restore_method, vrf_management_name):
         """Restore selected file to the provided destination
 
         :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
@@ -91,7 +91,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
                                          vrf_management_name=vrf_management_name)
         logger.info('Restore completed')
 
-    def save(self, context, folder_path='', configuration_type='running', vrf_management_name=None):
+    def save(self, context, folder_path, configuration_type, vrf_management_name):
         """Save selected file to the provided destination
 
         :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
@@ -117,7 +117,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         logger.info('Save completed')
         return response
 
-    def orchestration_save(self, context, mode="shallow", custom_params=None):
+    def orchestration_save(self, context, mode, custom_params):
         """
 
         :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
@@ -138,7 +138,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         logger.info('Orchestration save completed')
         return response
 
-    def orchestration_restore(self, context, saved_artifact_info, custom_params=None):
+    def orchestration_restore(self, context, saved_artifact_info, custom_params):
         """
 
         :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
@@ -156,7 +156,7 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         logger.info('Orchestration restore completed')
 
     @GlobalLock.lock
-    def load_firmware(self, context, path, vrf_management_name=None):
+    def load_firmware(self, context, path, vrf_management_name):
         """Upload and updates firmware on the resource
 
         :param ResourceCommandContext context: ResourceCommandContext object with all Resource Attributes inside
