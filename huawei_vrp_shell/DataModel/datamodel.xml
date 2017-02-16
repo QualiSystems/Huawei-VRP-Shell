@@ -400,7 +400,7 @@
             <AttachedAttributes/>
             <AttributeValues/>
             <Models>
-                <ResourceModel Name="huawei VRP Router" Description="" SupportsConcurrentCommands="true">
+                <ResourceModel Name="Huawei VRP Router" Description="" SupportsConcurrentCommands="true">
                     <AttachedAttributes>
                         <AttachedAttribute Name="User" IsOverridable="true" IsLocal="true">
                             <AllowedValues/>
