@@ -1,5 +1,6 @@
 from cloudshell.networking.huawei.runners.huawei_autoload_runner import HuaweiAutoloadRunner as AutoloadRunner
-from cloudshell.networking.huawei.runners.huawei_configuration_runner import HuaweiConfigurationRunner as ConfigurationRunner
+from cloudshell.networking.huawei.runners.huawei_configuration_runner import \
+    HuaweiConfigurationRunner as ConfigurationRunner
 from cloudshell.networking.huawei.runners.huawei_firmware_runner import HuaweiFirmwareRunner as FirmwareRunner
 from cloudshell.networking.huawei.runners.huawei_run_command_runner import HuaweiRunCommandRunner as CommandRunner
 from cloudshell.networking.huawei.runners.huawei_state_runner import HuaweiStateRunner as StateRunner
@@ -11,6 +12,7 @@ from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterf
 from cloudshell.shell.core.driver_utils import GlobalLock
 from cloudshell.networking.huawei.runners.huawei_connectivity_runner import \
     HuaweiConnectivityRunner as ConnectivityRunner
+
 
 class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverInterface, GlobalLock):
     def __init__(self):
@@ -29,7 +31,6 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
     def cleanup(self):
         pass
 
-
     @GlobalLock.lock
     def get_inventory(self, context):
         """Return device structure with all standard attributes
@@ -47,7 +48,6 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         response = autoload_operations.discover()
         logger.info('Autoload completed')
         return response
-
 
     def ApplyConnectivityChanges(self, context, request):
         logger = get_logger_with_thread_id(context)
@@ -174,7 +174,6 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         response = firmware_operations.load_firmware(path=path, vrf_management_name=vrf_management_name)
         logger.info('Finish Load Firmware: {}'.format(response))
 
-
     def run_custom_command(self, context, custom_command):
         """Send custom command
 
@@ -263,5 +262,5 @@ class HuaweiVRPResourceDriver(ResourceDriverInterface, NetworkingResourceDriverI
         result_str = send_command_operations.run_custom_config_command(custom_command=custom_command)
         return result_str
 
-
-    def shutdown(self, context):pass
+    def shutdown(self, context):
+        pass

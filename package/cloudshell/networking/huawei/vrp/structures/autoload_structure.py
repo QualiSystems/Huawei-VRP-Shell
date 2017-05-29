@@ -9,7 +9,8 @@ class HuaweiRootDevice(BaseResource):
     LOCATION = 'location'
     MODEL = 'model'
 
-    def __init__(self, system_name='', system_desc='',contact_name='', os_version='', vendor='', location='', model=''):
+    def __init__(self, system_name='', system_desc='', contact_name='', os_version='', vendor='', location='',
+                 model=''):
         """
         Represent HuaweiVRPDevice resource entity
 
@@ -25,7 +26,7 @@ class HuaweiRootDevice(BaseResource):
         BaseResource.__init__(self)
         self.attributes = {
             'System Name': system_name,
-            'System Description':system_desc,
+            'System Description': system_desc,
             'Contact Name': contact_name,
             'OS Version': os_version,
             'Vendor': vendor,
@@ -36,7 +37,6 @@ class HuaweiRootDevice(BaseResource):
     def system_name(self):
         return self.attributes['System Name']
 
-
     def set_system_name(self, value):
         self.attributes['System Name'] = value
 
@@ -44,15 +44,12 @@ class HuaweiRootDevice(BaseResource):
     def system_desc(self):
         return self.attributes['System Description']
 
-
     def set_system_desc(self, value):
         self.attributes['System Description'] = value
-
 
     @property
     def contact_name(self):
         return self.attributes['Contact Name']
-
 
     def set_contact_name(self, value):
         self.attributes['Contact Name'] = value
@@ -61,14 +58,12 @@ class HuaweiRootDevice(BaseResource):
     def os_version(self):
         return self.attributes['OS Version']
 
-
     def set_os_version(self, value):
         self.attributes['OS Version'] = value
 
     @property
     def vendor(self):
         return self.attributes['Vendor']
-
 
     def set_vendor(self, value):
         self.attributes['Vendor'] = value
@@ -77,14 +72,12 @@ class HuaweiRootDevice(BaseResource):
     def location(self):
         return self.attributes['Location']
 
-
     def set_location(self, value):
         self.attributes['Location'] = value
 
     @property
     def model(self):
         return self.attributes['Model']
-
 
     def set_model(self, value):
         self.attributes['Model'] = value
@@ -104,7 +97,8 @@ class GenericChassis(BaseResource):
         :return Generic Chassis
         """
 
-        BaseResource.__init__(self, resource_model=resource_model, name=name, relative_address=relative_address, unique_id=unique_id)
+        BaseResource.__init__(self, resource_model=resource_model, name=name, relative_address=relative_address,
+                              unique_id=unique_id)
         self.attributes = {
             'Model': model,
             'Serial Number': serial_number}
@@ -113,14 +107,12 @@ class GenericChassis(BaseResource):
     def model(self):
         return self.attributes['Model']
 
-
     def set_model(self, value):
         self.attributes['Model'] = value
 
     @property
     def serial_number(self):
         return self.attributes['Serial Number']
-
 
     def set_serial_number(self, value):
         self.attributes['Serial Number'] = value
@@ -131,7 +123,8 @@ class GenericModule(BaseResource):
     VERSION = 'version'
     MODEL = 'model'
 
-    def __init__(self, name, relative_address, resource_model='Generic Module', unique_id=None, serial_number='', version='', model=''):
+    def __init__(self, name, relative_address, resource_model='Generic Module', unique_id=None, serial_number='',
+                 version='', model=''):
         """
         Represent Generic Module resource entity
 
@@ -141,7 +134,8 @@ class GenericModule(BaseResource):
         :return Generic Module
         """
 
-        BaseResource.__init__(self, resource_model=resource_model, name=name, relative_address=relative_address, unique_id=unique_id)
+        BaseResource.__init__(self, resource_model=resource_model, name=name, relative_address=relative_address,
+                              unique_id=unique_id)
         self.attributes = {
             'Serial Number': serial_number,
             'Version': version,
@@ -151,7 +145,6 @@ class GenericModule(BaseResource):
     def serial_number(self):
         return self.attributes['Serial Number']
 
-
     def set_serial_number(self, value):
         self.attributes['Serial Number'] = value
 
@@ -159,14 +152,12 @@ class GenericModule(BaseResource):
     def version(self):
         return self.attributes['Version']
 
-
     def set_version(self, value):
         self.attributes['Version'] = value
 
     @property
     def model(self):
         return self.attributes['Model']
-
 
     def set_model(self, value):
         self.attributes['Model'] = value
@@ -221,14 +212,12 @@ class GenericPort(BaseResource):
     def mac_address(self):
         return self.attributes['MAC Address']
 
-
     def set_mac_address(self, value):
         self.attributes['MAC Address'] = value
 
     @property
     def l2_protocol_type(self):
         return self.attributes['L2 Protocol Type']
-
 
     def set_l2_protocol_type(self, value):
         self.attributes['L2 Protocol Type'] = value
@@ -237,14 +226,12 @@ class GenericPort(BaseResource):
     def ipv4_address(self):
         return self.attributes['IPv4 Address']
 
-
     def set_ipv4_address(self, value):
         self.attributes['IPv4 Address'] = value
 
     @property
     def ipv6_address(self):
         return self.attributes['IPv6 Address']
-
 
     def set_ipv6_address(self, value):
         self.attributes['IPv6 Address'] = value
@@ -253,14 +240,12 @@ class GenericPort(BaseResource):
     def port_description(self):
         return self.attributes['Port Description']
 
-
     def set_port_description(self, value):
         self.attributes['Port Description'] = value
 
     @property
     def bandwidth(self):
         return self.attributes['Bandwidth']
-
 
     def set_bandwidth(self, value):
         self.attributes['Bandwidth'] = value
@@ -269,14 +254,12 @@ class GenericPort(BaseResource):
     def mtu(self):
         return self.attributes['MTU']
 
-
     def set_mtu(self, value):
         self.attributes['MTU'] = value
 
     @property
     def duplex(self):
         return self.attributes['Duplex']
-
 
     def set_duplex(self, value):
         self.attributes['Duplex'] = value
@@ -285,14 +268,12 @@ class GenericPort(BaseResource):
     def adjacent(self):
         return self.attributes['Adjacent']
 
-
     def set_adjacent(self, value):
         self.attributes['Adjacent'] = value
 
     @property
     def auto_negotiation(self):
         return self.attributes['Auto Negotiation']
-
 
     def set_auto_negotiation(self, value):
         self.attributes['Auto Negotiation'] = value
@@ -325,7 +306,6 @@ class GenericSubModule(BaseResource):
     def serial_number(self):
         return self.attributes['Serial Number']
 
-
     def set_serial_number(self, value):
         self.attributes['Serial Number'] = value
 
@@ -333,14 +313,12 @@ class GenericSubModule(BaseResource):
     def version(self):
         return self.attributes['Version']
 
-
     def set_version(self, value):
         self.attributes['Version'] = value
 
     @property
     def model(self):
         return self.attributes['Model']
-
 
     def set_model(self, value):
         self.attributes['Model'] = value
@@ -376,7 +354,6 @@ class GenericPowerPort(BaseResource):
     def model(self):
         return self.attributes['Model']
 
-
     def set_model(self, value):
         self.attributes['Model'] = value
 
@@ -391,14 +368,12 @@ class GenericPowerPort(BaseResource):
     def version(self):
         return self.attributes['Version']
 
-
     def set_version(self, value):
         self.attributes['Version'] = value
 
     @property
     def port_description(self):
         return self.attributes['Port Description']
-
 
     def set_port_description(self, value):
         self.attributes['Port Description'] = value
@@ -434,14 +409,12 @@ class GenericPortChannel(BaseResource):
     def associated_ports(self):
         return self.attributes['Associated Ports']
 
-
     def set_associated_ports(self, value):
         self.attributes['Associated Ports'] = value
 
     @property
     def ipv4_address(self):
         return self.attributes['IPv4 Address']
-
 
     def set_ipv4_address(self, value):
         self.attributes['IPv4 Address'] = value
@@ -450,14 +423,12 @@ class GenericPortChannel(BaseResource):
     def ipv6_address(self):
         return self.attributes['IPv6 Address']
 
-
     def set_ipv6_address(self, value):
         self.attributes['IPv6 Address'] = value
 
     @property
     def port_description(self):
         return self.attributes['Port Description']
-
 
     def set_port_description(self, value):
         self.attributes['Port Description'] = value

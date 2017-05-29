@@ -1,7 +1,7 @@
 ﻿<Shell>
     <ShellAttributes>
     </ShellAttributes>
-        <ShellModel Family="Router">
+    <ShellModel Family="Router">
         <ResourceModel Name="Huaweivrprouter" Description="" SupportsConcurrentCommands="false">
             <AttachedAttributes>
                 <AttachedAttribute Name="User" IsOverridable="true" IsLocal="true">
@@ -131,15 +131,15 @@
                 <AttributeValue Name="Enable SNMP" Value="True"/>
                 <AttributeValue Name="Disable SNMP" Value="False"/>
             </AttributeValues>
-            <ParentModels />
+            <ParentModels/>
             <Drivers>
                 <DriverName>HuaweivrpDriver</DriverName>
             </Drivers>
-            <Scripts />
+            <Scripts/>
         </ResourceModel>
 
     </ShellModel>
-        <ShellModel Family="Switch">
+    <ShellModel Family="Switch">
         <ResourceModel Name="Huaweivrpswitch" Description="" SupportsConcurrentCommands="false">
             <AttachedAttributes>
                 <AttachedAttribute Name="User" IsOverridable="true" IsLocal="true">
@@ -269,11 +269,11 @@
                 <AttributeValue Name="Enable SNMP" Value="True"/>
                 <AttributeValue Name="Disable SNMP" Value="False"/>
             </AttributeValues>
-            <ParentModels />
+            <ParentModels/>
             <Drivers>
                 <DriverName>HuaweivrpDriver</DriverName>
             </Drivers>
-            <Scripts />
+            <Scripts/>
         </ResourceModel>
 
     </ShellModel>

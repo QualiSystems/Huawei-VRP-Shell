@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails,ConnectivityContext
+from cloudshell.shell.core.context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails, \
+    ConnectivityContext
 from huawei_vrp_resource_driver import HuaweiVRPResourceDriver
 import re
 
@@ -13,7 +14,7 @@ def create_context():
     context.reservation.reservation_id = '5695cf87-a4f3-4447-a08a-1a99a936010e'
     context.reservation.owner_user = 'admin'
     context.reservation.owner_email = 'fake@qualisystems.com'
-    context.reservation.environment_path ='Environment-6-7-2016 15-25'
+    context.reservation.environment_path = 'Environment-6-7-2016 15-25'
     context.reservation.environment_name = 'Environment-6-7-2016 15-25'
     context.reservation.domain = 'Global'
     context.resource.attributes = {}
@@ -27,7 +28,7 @@ def create_context():
     context.resource.attributes['SNMP Version'] = '2'
     context.resource.attributes['SNMP Read Community'] = 'Test1234'
     context.resource.attributes['Model'] = 'Enterprises.2011.2.23.339'
-    context.resource.attributes['AdminPassword'] ='DxTbqlSgAVPmrDLlHvJrsA=='
+    context.resource.attributes['AdminPassword'] = 'DxTbqlSgAVPmrDLlHvJrsA=='
     context.resource.attributes['Vendor'] = 'huawei'
     context.resource.attributes['Enable SNMP'] = 'True'
     context.resource.attributes['Disable SNMP'] = 'False'
@@ -55,7 +56,7 @@ def create_context():
 
 '''
 
-#Access
+# Access
 request = """{
 	"driverRequest": {
 		"actions": [{
@@ -107,30 +108,28 @@ request = """{
 	}
 }"""
 
-
 if __name__ == '__main__':
     context = create_context()
     driver = HuaweiVRPResourceDriver()
 
-    #response = driver.get_inventory(context)
-    #res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
+    # response = driver.get_inventory(context)
+    # res = driver.save(context, 'tftp://82.80.35.226/test', 'startup')
     #
-    #res = driver.save(context, 'flash:/config_backup/','startup')
-    #C:/Users/Administrator/Desktop/test
-    #tftp://12.30.245.98/test/test.txt
-    #res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
+    # res = driver.save(context, 'flash:/config_backup/','startup')
+    # C:/Users/Administrator/Desktop/test
+    # tftp://12.30.245.98/test/test.txt
+    # res = driver.restore(context,'flash:/config_backup/vrpcfg.zip', 'startup', 'override')
     driver.initialize(context)
-    #response = driver.get_inventory(context)
-    #response = driver.ApplyConnectivityChanges(context,request)
-    #response = driver.restore(context, 'cfcard:/config_backup/vrpcfg.zip', 'startup', 'override')
+    # response = driver.get_inventory(context)
+    # response = driver.ApplyConnectivityChanges(context,request)
+    # response = driver.restore(context, 'cfcard:/config_backup/vrpcfg.zip', 'startup', 'override')
     response = driver.save(context, 'tftp://172.19.107.44/test', 'startup')
     response = driver.restore(context, 'cfcard:/config_backup/vrpcfg.zip', 'startup', 'override')
-    #res = driver.ApplyConnectivityChanges(context, request)
+    # res = driver.ApplyConnectivityChanges(context, request)
     print response
-    #res=driver.update_firmware(context,'1.1.1.1','flash:/config_backup/')
-    #print driver.send_custom_command(context, "display version")
+    # res=driver.update_firmware(context,'1.1.1.1','flash:/config_backup/')
+    # print driver.send_custom_command(context, "display version")
     # print response
-
 
 '''context:
 
