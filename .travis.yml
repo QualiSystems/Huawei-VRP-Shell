@@ -1,26 +1,30 @@
 language: python
 python:
-    - "2.7"
+- '2.7'
+env:
+  - TEST_DIR=package
+  - TEST_DIR=huawei_vrp_shell
 
 install:
-    # todo: fix dependencies mismatch and use python setup.py install instead
+    pushd package
     - 'if [ ${TRAVIS_BRANCH} \!= "master" ] && [ -f dev_requirements.txt ]; then
-        pushd package;
-        pip install -r dev_requirements.txt;
+        pip install --extra-index-url https://testpypi.python.org/pypi -r dev_requirements.txt;
         python setup.py develop --no-deps;
-        popd;
       else
-        pushd package;
+        # todo: fix dependencies mismatch and use python setup.py install instead
         pip install -r requirements.txt;
         python setup.py develop --no-deps;
-        popd;
       fi'
-    - pip install -r huawei_vrp_shell/src/requirements.txt
-    - pip install -r package/test_requirements.txt
-    - pip install coveralls
+    popd
+    - cd $TEST_DIR
+    - pip install -r test_requirements.txt
 
 script:
-    - nosetests --with-coverage --cover-package=src,cloudshell.networking.huawei.vrp package/tests huawei_vrp_shell/tests
+    - 'if [ $TEST_DIR = "package" ]; then
+        nosetests --with-coverage --cover-package=cloudshell.networking.huawei.vrp tests;
+      else
+        nosetests --with-coverage --cover-package=src tests;
+      fi'
 
 after_success:
     - coveralls
