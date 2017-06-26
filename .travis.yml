@@ -6,18 +6,19 @@ env:
   - TEST_DIR=huawei_vrp_shell
 
 install:
-    pushd package
+    - pushd package
+    # todo: fix dependencies mismatch and use python setup.py install instead
     - 'if [ ${TRAVIS_BRANCH} \!= "master" ] && [ -f dev_requirements.txt ]; then
         pip install --extra-index-url https://testpypi.python.org/pypi -r dev_requirements.txt;
         python setup.py develop --no-deps;
       else
-        # todo: fix dependencies mismatch and use python setup.py install instead
         pip install -r requirements.txt;
         python setup.py develop --no-deps;
       fi'
-    popd
+    - popd
     - cd $TEST_DIR
     - pip install -r test_requirements.txt
+    - pip install coveralls
 
 script:
     - 'if [ $TEST_DIR = "package" ]; then
